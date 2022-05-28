@@ -1,20 +1,44 @@
 const express = require('express')
 const router = express.Router()
+const databaseConnection = require('../helpers/database.js')
 
-router.get('/annonces', (req, res) => {
-    res.status(200).json(annonces)
+// GET Affiche TOUTES les annonces
+router.get('/', async (req, res) => {
+    try {
+        const requeteSQL = 'SELECT id_annonce,titre,description,lieu,monnaie FROM annonces'
+        const rows = await databaseConnection.query(requeteSQL)
+        res.status(200).json(rows)
+        console.log('Vous avez bien affiché les annonces');
+    } catch (error) {
+        res.status(400).send(error.message)
+    }
 })
 
-router.get('/annonces/:id', (req, res) => {
-    const id = parseInt(req.params.id)
-    const annonce = annonces.find(annonce => annonce.id === id)
-    res.status(200).json(annonce)
+
+// GET Affiche UNE annonce SELON id_annonce
+router.get('/:id', async (req, res) => {
+    try {
+        const requeteSQL = 'SELECT id_annonce,titre,description,lieu,monnaie FROM annonces WHERE id_annonce=?'
+        const rows = await databaseConnection.query(requeteSQL, req.params.id)
+        res.status(200).json(rows)
+        console.log('Vous avez bien affiché UNE annonce');
+
+    } catch (error) {
+        res.status(400).send(error.message)
+    }
 })
 
-router.post('/annonces', (req, res) => {
-    annonces.push(req.body)
-    res.status(200).json(annonces)
-    console.log("Vous avez bien ajouté l'annonce", annonces)
+
+// POST Ajoute UNE annonce
+router.post('/', async (req, res) => {
+    try {
+        const { titre, description, lieu, monnaie } = req.body
+        const requeteSQL = 'INSERT INTO annonces (titre,description,lieu,monnaie) VALUES (?,?,?,?)'
+        const resultat = await databaseConnection.query(requeteSQL, [titre, description, lieu, monnaie])
+        res.status(200).json(resultat)
+    } catch (error) {
+        res.status(400).send(error.message)
+    }
 })
 
 router.put('/annonces/:id', (req, res) => {
