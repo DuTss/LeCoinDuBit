@@ -8,6 +8,7 @@ const pool = mariadb.createPool({
     connectionLimit: 5
 });
 
+// GESTION DES ERREURS DE CONNEXION A LA BASE DE DONNEES
 pool.getConnection((err, connection) => {
     if (err) {
         if (err.code === 'PROTOCOL__CONNECTION_LOST') {

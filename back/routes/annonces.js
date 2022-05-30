@@ -34,44 +34,37 @@ router.post('/', async (req, res) => {
     try {
         const { titre, description, lieu, monnaie } = req.body
         const requeteSQL = 'INSERT INTO annonces (titre,description,lieu,monnaie) VALUES (?,?,?,?)'
-        const resultat = await databaseConnection.query(requeteSQL, [titre, description, lieu, monnaie])
-        res.status(200).json(JSON.stringify(resultat))
+        await databaseConnection.query(requeteSQL, [titre, description, lieu, monnaie])
+        res.status(200).send("Vous avez bien ajouté une annonce !")
         // Do not know how to serialize a BigInt !!!!!! ------------------- PROBLEME
     } catch (error) {
         res.status(400).send(error.message)
     }
 })
 
+// PUT Modifie l'annonce selon id_annonce
 router.put('/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const { titre, description, lieu, monnaie } = req.body;
         const requeteSQL = 'UPDATE annonces SET titre = ?, description = ?, lieu = ?, monnaie = ? WHERE id_annonce = ?'
-        const resultat = await databaseConnection.query(requeteSQL, [titre, description, lieu, monnaie, id])
-        res.status(200).json(JSON.stringify(resultat))
+        await databaseConnection.query(requeteSQL, [titre, description, lieu, monnaie, id])
+        res.status(200).send(`L'annonce ${titre} a bien été modifié.`)
     } catch (error) {
         res.status(400).send(error.message)
     }
 })
 
+// DELETE Supprimer l'annonce selon id_annonce
 router.delete('/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const requeteSQL = 'DELETE FROM annonces WHERE id_annonce = ?'
-        const resultat = await databaseConnection.query(requeteSQL, [id])
-        res.status(200).json(JSON.stringify(resultat))
+        await databaseConnection.query(requeteSQL, [id])
+        res.status(200).send(`L'annonce a bien été supprimé.`)
     } catch (error) {
         res.status(400).send(error.message)
     }
 })
-
-// router.put('/annonces/:id', (req, res) => {
-//     const id = parseInt(req.params.id)
-//     let annonce = annonces.find(annonce => annonce.id === id)
-//     annonce.titre = req.body.titre,
-//         annonce.description = req.body.description,
-//         annonce.Lieu = req.body.Lieu,
-//         res.status(200).json(annonce)
-// })
 
 module.exports = router
