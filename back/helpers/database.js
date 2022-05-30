@@ -11,14 +11,18 @@ const pool = mariadb.createPool({
 // GESTION DES ERREURS DE CONNEXION A LA BASE DE DONNEES
 pool.getConnection((err, connection) => {
     if (err) {
-        if (err.code === 'PROTOCOL__CONNECTION_LOST') {
-            console.error('Connexion à la base de données perdue.');
-        }
-        if (err.code === 'ER_CON_COUNT_ERROR') {
-            console.error('Trop de connexion demandées à la base de données.');
-        }
-        if (err.code === 'ERRCONNREFUSED') {
-            console.error('La connexion à la base de données à été refusé');
+        switch (err.code) {
+            case 'PROTOCOL__CONNECTION_LOST':
+                console.error('Connexion à la base de données perdue.');
+                break;
+            case 'ER_CON_COUNT_ERROR':
+                console.error('Trop de connexion demandées à la base de données.');
+                break;
+            case 'ERRCONNREFUSED':
+                console.error('La connexion à la base de données à été refusé');
+                break;
+            default:
+                break;
         }
     }
     (connection) ? connection.release() : null

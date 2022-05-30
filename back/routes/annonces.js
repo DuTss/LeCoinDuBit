@@ -22,7 +22,6 @@ router.get('/:id', async (req, res) => {
         const rows = await databaseConnection.query(requeteSQL, req.params.id)
         res.status(200).json(rows)
         console.log('Vous avez bien affiché UNE annonce');
-
     } catch (error) {
         res.status(400).send(error.message)
     }
@@ -36,7 +35,6 @@ router.post('/', async (req, res) => {
         const requeteSQL = 'INSERT INTO annonces (titre,description,lieu,monnaie) VALUES (?,?,?,?)'
         await databaseConnection.query(requeteSQL, [titre, description, lieu, monnaie])
         res.status(200).send("Vous avez bien ajouté une annonce !")
-        // Do not know how to serialize a BigInt !!!!!! ------------------- PROBLEME
     } catch (error) {
         res.status(400).send(error.message)
     }
